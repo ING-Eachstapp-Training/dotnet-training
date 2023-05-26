@@ -11,7 +11,7 @@ namespace chapter_2.Models
 
         public override void DisplayTask()
         {
-            Console.WriteLine($"[{Id}] - {base.Title} [{(isComplete ? "Complete" : "Uncomplete")}]");
+            base.DisplayTask();
             Console.WriteLine($"-->{Description}");
         }
     }

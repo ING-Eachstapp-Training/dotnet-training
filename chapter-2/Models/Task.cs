@@ -13,7 +13,10 @@ namespace chapter_2.Models
             Title = title;
         }
 
-        public abstract void DisplayTask();
+        public virtual void DisplayTask()
+        {
+            Console.WriteLine($"[{Id}] - {Title} [{(isComplete ? "Complete" : "Uncomplete")}]");
+        }
     }
 }
 
