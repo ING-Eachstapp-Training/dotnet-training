@@ -1,7 +1,7 @@
 ﻿using System;
 namespace chapter_2.Models
 {
-    class ComplexTask : Task
+    public class ComplexTask : Task
     {
         public string Description { get; set; }
         public ComplexTask(int id, string title, string description) : base(id, title)

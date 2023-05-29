@@ -6,7 +6,7 @@ using Task = chapter_2.Models.Task;
 
 namespace chapter_2.Database
 {
-    class TodoListDatabase
+    public class TodoListDatabase
     {
         private List<Task> tasks;
 
@@ -29,14 +29,14 @@ namespace chapter_2.Database
         {
             Task task = FindTaskById(taskId);
 
-            task.isComplete = true;
+            task.IsComplete = true;
         }
 
         public void UncompleteTask(int taskId)
         {
             Task task = FindTaskById(taskId);
 
-            task.isComplete = false;
+            task.IsComplete = false;
         }
 
         public void EditTask(int taskId, string newTitle, string newDescription)

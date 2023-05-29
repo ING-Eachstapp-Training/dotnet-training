@@ -1,11 +1,11 @@
 ﻿using System;
 namespace chapter_2.Models
 {
-    abstract class Task
+    public abstract class Task
     {
         public int Id { get; set; }
         public string Title { get; set; }
-        public bool isComplete { get; set; } = false;
+        public bool IsComplete { get; set; } = false;
 
         protected Task(int id, string title)
         {
@@ -15,7 +15,7 @@ namespace chapter_2.Models
 
         public virtual void DisplayTask()
         {
-            Console.WriteLine($"[{Id}] - {Title} [{(isComplete ? "Complete" : "Uncomplete")}]");
+            Console.WriteLine($"[{Id}] - {Title} [{(IsComplete ? "Complete" : "Uncomplete")}]");
         }
     }
 }
