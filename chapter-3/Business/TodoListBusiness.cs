@@ -35,18 +35,22 @@ namespace chapter_3.Business
         public void AddTask()
         {
             Console.WriteLine("----- Add Task -----");
-            Console.Write("Enter task title: ");
             string title = _askForTitle();
             if (title == null)
             {
                 return;
             }
 
-            Console.Write("Enter new task description (if applicable): ");
             string description = _askForDescription();
 
+            List<string> tags = _askForTags();
+            if (tags == null)
+            {
+                return;
+            }
+
             Task newTask = new Task(title, description, false);
-            _toDoListDB.AddTask(newTask);
+            _toDoListDB.AddTask(title, description, tags);
             Console.WriteLine("Task added successfully.");
         }
 
@@ -109,14 +113,12 @@ namespace chapter_3.Business
                 {
                     Task taskToComplete = _toDoListDB.FindTaskById(taskId);
 
-                    Console.Write("Enter new task title: ");
                     string newTitle = _askForTitle();
                     if (newTitle == null)
                     {
                         return;
                     }
 
-                    Console.Write("Enter new task description: ");
                     string newDescription = _askForDescription();
 
                     _toDoListDB.EditTask(taskId, newTitle, newDescription);
@@ -178,8 +180,8 @@ namespace chapter_3.Business
 
         private string? _askForDescription()
         {
-            string description = Console.ReadLine().Trim();
             Console.Write("Enter new task description (if applicable): ");
+            string description = Console.ReadLine().Trim();
             if (string.IsNullOrEmpty(description) || string.IsNullOrWhiteSpace(description))
             {
                 return null;
@@ -190,6 +192,25 @@ namespace chapter_3.Business
                 return null;
             }
             return description;
+        }
+
+        private List<string>? _askForTags()
+        {
+            Console.Write("Enter new tags separated by white space (if applicable): ");
+            string tags = Console.ReadLine().Trim();
+            if (string.IsNullOrEmpty(tags) || string.IsNullOrWhiteSpace(tags))
+            {
+                return new List<string>();
+            }
+
+            var tagList = tags.Split(" ");
+            if (tagList.Any(tag => tag.Length > 10))
+            {
+                Console.Write("Each tag can at most contain 10 characters");
+                return null;
+            }
+
+            return tagList.ToList();
         }
     }
 }

@@ -3,6 +3,7 @@ using chapter_3.Database.Context;
 using chapter_3.Database.Models;
 using chapter_3.Exceptions;
 using chapter_3.Models;
+using Microsoft.EntityFrameworkCore;
 using Task = chapter_3.Models.Task;
 
 namespace chapter_3.Database
@@ -18,17 +19,26 @@ namespace chapter_3.Database
 
         public List<Task> GetAllTasks()
         {
-            var allTasks = _todoListDBContext.Tasks.ToList();
-            return allTasks.Select(taskEntity => new Task(taskEntity.Id, taskEntity.Title, taskEntity.Description, taskEntity.IsComplete)).ToList();
+            var allTasks = _todoListDBContext.Tasks.Include(task => task.TagEntities).ToList();
+            return allTasks.Select(taskEntity =>
+            new Task(
+                taskEntity.Id,
+                taskEntity.Title,
+                taskEntity.Description,
+                taskEntity.IsComplete,
+                taskEntity.TagEntities.Select(tag => new Tag(tag.Id, tag.Label)).ToList()
+             )
+            ).ToList();
         }
 
-        public void AddTask(Task task)
+        public void AddTask(string title, string? description, List<string> tags)
         {
             TaskEntity newTaskEntity = new TaskEntity()
             {
                 IsComplete = false,
-                Title = task.Title,
-                Description = task.Description
+                Title = title,
+                Description = description,
+                TagEntities = tags.Select(tag => new TagEntity() { Label = tag }).ToList()
             };
             _todoListDBContext.Tasks.Add(newTaskEntity);
             _todoListDBContext.SaveChanges();
@@ -68,7 +78,8 @@ namespace chapter_3.Database
             var taskEntity = _todoListDBContext.Tasks.FirstOrDefault(taskEntity => taskEntity.Id == taskId);
             if (taskEntity != null)
             {
-                return new Task(taskEntity.Id, taskEntity.Title, taskEntity.Description, taskEntity.IsComplete);
+                var tagList = taskEntity.TagEntities.Select(tag => new Tag(tag.Id, tag.Label)).ToList();
+                return new Task(taskEntity.Id, taskEntity.Title, taskEntity.Description, taskEntity.IsComplete, tagList);
             }
             throw new TaskNotFoundException($"Task with Id {taskId} not found.");
         }

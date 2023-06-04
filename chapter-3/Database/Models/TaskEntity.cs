@@ -14,6 +14,8 @@ namespace chapter_3.Database.Models
         public string? Description { get; set; }
 
         public Boolean IsComplete { get; set; }
+
+        public ICollection<TagEntity> TagEntities { get; set; }
     }
 }
 
