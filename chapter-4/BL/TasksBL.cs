@@ -35,6 +35,10 @@ namespace chapter_4.BL
         public async Task<TaskDTO> UpdateTask(UpdateTaskDTO updateTaskDTO)
         {
             _logger.LogInformation("[TasksBL][updateTaskDTO()] entered function");
+
+            // Get the task by id (throws an error if it doesn't exist)
+            await _uow.TasksRepository.FindTaskById(updateTaskDTO.TaskId);
+
             var updatedTask = await _uow.TasksRepository.EditTask(updateTaskDTO);
             _uow.Commit();
             return updatedTask;
@@ -43,6 +47,10 @@ namespace chapter_4.BL
         public async Task<TaskDTO> ToggleTask(int taskId, bool newIsComplete)
         {
             _logger.LogInformation("[TasksBL][ToggleTask()] entered function");
+
+            // Get the task by id (throws an error if it doesn't exist)
+            await _uow.TasksRepository.FindTaskById(taskId);
+
             var toggledTask = await _uow.TasksRepository.ToggleTask(taskId, newIsComplete);
             _uow.Commit();
             return toggledTask;
@@ -51,6 +59,10 @@ namespace chapter_4.BL
         public async Task DeleteTask(int taskId)
         {
             _logger.LogInformation("[TasksBL][DeleteTask()] entered function");
+
+            // Get the task by id (throws an error if it doesn't exist)
+            await _uow.TasksRepository.FindTaskById(taskId);
+
             await _uow.TasksRepository.DeleteTask(taskId);
             _uow.Commit();
         }

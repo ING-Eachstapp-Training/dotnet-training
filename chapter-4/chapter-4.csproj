@@ -32,6 +32,7 @@
     <None Remove="Data\Models\" />
     <None Remove="Exceptions\" />
     <None Remove="DAL\Repositories\" />
+    <None Remove="Middleware\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="BL\" />
@@ -44,5 +45,6 @@
     <Folder Include="Data\Models\" />
     <Folder Include="Exceptions\" />
     <Folder Include="DAL\Repositories\" />
+    <Folder Include="Middleware\" />
   </ItemGroup>
 </Project>

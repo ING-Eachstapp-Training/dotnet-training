@@ -1,6 +1,7 @@
 ﻿
 using chapter_4.BL;
 using chapter_4.DAL;
+using chapter_4.Middleware;
 
 namespace chapter_4;
 
@@ -29,6 +30,8 @@ public class Program
             app.UseSwagger();
             app.UseSwaggerUI();
         }
+
+        app.UseMiddleware<ErrorHandlerMiddleware>();
 
         app.UseHttpsRedirection();
 
