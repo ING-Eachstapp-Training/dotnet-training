@@ -1,13 +1,11 @@
 ﻿using System;
 using AutoMapper;
 using chapter_4.Data.Context;
-using chapter_4.Data.Models;
 using chapter_4.DTO;
 using chapter_4.DTO.Add;
 using chapter_4.DTO.Update;
 using chapter_4.Exceptions;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 namespace chapter_4.DAL.Repositories
 {
@@ -22,21 +20,28 @@ namespace chapter_4.DAL.Repositories
             _mapper = mapper;
         }
 
-
-        public List<TaskDTO> GetAllTasks()
+        public async Task<TaskDTO?> GetTaskByTitleAsync(string title)
         {
-            var allTasks = _todoListDBContext.Tasks.Include(task => task.Tags).ToList();
+            var myTask = await _todoListDBContext.Tasks.FirstOrDefaultAsync(task => task.Title.Equals(title));
+            return _mapper.Map<chapter_4.Data.Models.Task?, TaskDTO?>(myTask);
+        }
+
+
+        public List<TaskDTO> GetAllTasks(Guid userId)
+        {
+            var allTasks = _todoListDBContext.Tasks.Where(task => task.UserId == userId).ToList();
             return _mapper.Map<List<Data.Models.Task>, List<TaskDTO>>(allTasks);
         }
 
-        public TaskDTO AddTask(AddTaskDTO addTaskDTO)
+        public async Task<TaskDTO> AddTaskAsync(Guid userId, AddTaskDTO addTaskDTO)
         {
             Data.Models.Task newTaskEntity = _mapper.Map<AddTaskDTO, Data.Models.Task>(addTaskDTO);
-            _todoListDBContext.Tasks.Add(newTaskEntity);
+            newTaskEntity.UserId = userId;
+            await _todoListDBContext.Tasks.AddAsync(newTaskEntity);
             return _mapper.Map<Data.Models.Task, TaskDTO>(newTaskEntity);
         }
 
-        public async Task<TaskDTO> ToggleTask(int taskId, bool newIsComplete)
+        public async Task<TaskDTO> ToggleTask(Guid taskId, bool newIsComplete)
         {
             Data.Models.Task taskToEdit = await _todoListDBContext.Tasks.FirstOrDefaultAsync(taskEntity => taskEntity.Id == taskId);
 
@@ -51,13 +56,12 @@ namespace chapter_4.DAL.Repositories
             Data.Models.Task taskToEdit = await _todoListDBContext.Tasks.FirstOrDefaultAsync(taskEntity => taskEntity.Id == updateTaskDTO.TaskId);
 
             taskToEdit.Title = updateTaskDTO.Title;
-            taskToEdit.Description = updateTaskDTO.Description;
 
             _todoListDBContext.Tasks.Update(taskToEdit);
             return _mapper.Map<Data.Models.Task, TaskDTO>(taskToEdit);
         }
 
-        public async System.Threading.Tasks.Task DeleteTask(int taskId)
+        public async System.Threading.Tasks.Task DeleteTask(Guid taskId)
         {
             Data.Models.Task taskToDelete = await _todoListDBContext.Tasks.FirstOrDefaultAsync(taskEntity => taskEntity.Id == taskId);
 
@@ -65,7 +69,7 @@ namespace chapter_4.DAL.Repositories
             _todoListDBContext.SaveChanges();
         }
 
-        public async Task<TaskDTO> FindTaskById(int taskId)
+        public async Task<TaskDTO> FindTaskById(Guid taskId)
         {
             var taskEntity = await _todoListDBContext.Tasks.FirstOrDefaultAsync(taskEntity => taskEntity.Id == taskId);
             if (taskEntity != null)

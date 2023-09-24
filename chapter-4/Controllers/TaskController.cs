@@ -22,35 +22,42 @@ public class TaskController : ControllerBase
     }
 
     [HttpGet]
+    [Attributes.AuthorizeAttributes()]
     public ActionResult<List<TaskDTO>> GetAllTasks()
     {
         _logger.LogInformation("[TaskController][GetAllTasks()] entered controller");
-        return new OkObjectResult(_tasksBL.GetAllTasks());
+        var userId = (Guid)HttpContext.Items["UserId"]!;
+        return new OkObjectResult(_tasksBL.GetAllTasks(userId));
     }
 
     [HttpPost]
-    public ActionResult<List<TaskDTO>> CreateNewTask(AddTaskDTO addTaskDTO)
+    [Attributes.AuthorizeAttributes()]
+    public async Task<ActionResult<TaskDTO>> CreateNewTaskAsync(AddTaskDTO addTaskDTO)
     {
         _logger.LogInformation("[TaskController][CreateNewTask()] entered controller");
-        return new OkObjectResult(_tasksBL.AddNewTask(addTaskDTO));
+        var userId = (Guid)HttpContext.Items["UserId"]!;
+        return new OkObjectResult(await _tasksBL.AddNewTaskAsync(userId, addTaskDTO));
     }
 
     [HttpPut]
-    public async Task<ActionResult<List<TaskDTO>>> UpdateTaskTaskAsync(UpdateTaskDTO updateTaskDTO)
+    [Attributes.AuthorizeAttributes()]
+    public async Task<ActionResult<TaskDTO>> UpdateTaskTaskAsync(UpdateTaskDTO updateTaskDTO)
     {
         _logger.LogInformation("[TaskController][UpdateTaskTask()] entered controller");
         return new OkObjectResult(await _tasksBL.UpdateTask(updateTaskDTO));
     }
 
     [HttpPut("/ToggleTask")]
-    public async Task<ActionResult<List<TaskDTO>>> ToggleTaskAsync(int taskId, bool newIsComplete)
+    [Attributes.AuthorizeAttributes()]
+    public async Task<ActionResult<List<TaskDTO>>> ToggleTaskAsync(Guid taskId, bool newIsComplete)
     {
         _logger.LogInformation("[TaskController][ToggleTask()] entered controller");
         return new OkObjectResult(await _tasksBL.ToggleTask(taskId, newIsComplete));
     }
 
     [HttpDelete]
-    public async Task<ActionResult> DeleteTaskAsync(int taskId)
+    [Attributes.AuthorizeAttributes()]
+    public async Task<ActionResult> DeleteTaskAsync(Guid taskId)
     {
         _logger.LogInformation("[TaskController][ToggleTask()] entered controller");
         await _tasksBL.DeleteTask(taskId);

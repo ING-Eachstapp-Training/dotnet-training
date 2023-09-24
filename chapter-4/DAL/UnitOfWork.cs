@@ -10,6 +10,7 @@ namespace chapter_4.DAL
         private readonly TodoListDBContext _context;
         private readonly ILogger<UnitOfWork> _logger;
         private TasksRepository _tasksRepository;
+        private UsersRepository _usersRepository;
 
         private IMapper _mapper;
 
@@ -31,6 +32,19 @@ namespace chapter_4.DAL
                 return _tasksRepository;
             }
         }
+
+        public UsersRepository UsersRepository
+        {
+            get
+            {
+                if (_usersRepository == null)
+                {
+                    _usersRepository = new UsersRepository(_context);
+                }
+                return _usersRepository;
+            }
+        }
+
 
         public void Dispose()
         {

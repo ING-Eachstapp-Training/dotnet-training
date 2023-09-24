@@ -3,6 +3,7 @@ using chapter_4.DAL;
 using chapter_4.DTO;
 using chapter_4.DTO.Add;
 using chapter_4.DTO.Update;
+using chapter_4.Exceptions;
 
 namespace chapter_4.BL
 {
@@ -18,16 +19,17 @@ namespace chapter_4.BL
             _logger = logger;
         }
 
-        public List<TaskDTO> GetAllTasks()
+        public List<TaskDTO> GetAllTasks(Guid userId)
         {
             _logger.LogInformation("[TasksBL][GetAllTasks()] entered function");
-            return _uow.TasksRepository.GetAllTasks();
+            return _uow.TasksRepository.GetAllTasks(userId);
         }
 
-        public TaskDTO AddNewTask(AddTaskDTO addTaskDTO)
+        public async Task<TaskDTO> AddNewTaskAsync(Guid userId, AddTaskDTO addTaskDTO)
         {
             _logger.LogInformation("[TasksBL][addTaskDTO()] entered function");
-            var newTask = _uow.TasksRepository.AddTask(addTaskDTO);
+
+            var newTask = await _uow.TasksRepository.AddTaskAsync(userId, addTaskDTO);
             _uow.Commit();
             return newTask;
         }
@@ -44,7 +46,7 @@ namespace chapter_4.BL
             return updatedTask;
         }
 
-        public async Task<TaskDTO> ToggleTask(int taskId, bool newIsComplete)
+        public async Task<TaskDTO> ToggleTask(Guid taskId, bool newIsComplete)
         {
             _logger.LogInformation("[TasksBL][ToggleTask()] entered function");
 
@@ -56,7 +58,7 @@ namespace chapter_4.BL
             return toggledTask;
         }
 
-        public async Task DeleteTask(int taskId)
+        public async Task DeleteTask(Guid taskId)
         {
             _logger.LogInformation("[TasksBL][DeleteTask()] entered function");
 

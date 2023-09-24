@@ -34,6 +34,10 @@ namespace chapter_4.Middleware
                         response.StatusCode = 400;
                         title = "The task is not found";
                         break;
+                    case NotConnectedException:
+                        response.StatusCode = 401;
+                        title = "You are not logged in";
+                        break;
                     default:
                         // unhandled error (thrown as internal server errors)
                         _logger.LogError(error.Message);
