@@ -38,6 +38,10 @@ namespace chapter_4.Middleware
                         response.StatusCode = 401;
                         title = "You are not logged in";
                         break;
+                    case WrongCredentialsException:
+                        response.StatusCode = 400;
+                        title = "Invalid email";
+                        break;
                     default:
                         // unhandled error (thrown as internal server errors)
                         _logger.LogError(error.Message);
