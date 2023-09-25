@@ -25,6 +25,13 @@ namespace chapter_4.BL
             return _uow.TasksRepository.GetAllTasks(userId);
         }
 
+        public async Task<TaskDTO> GetTaskById(Guid taskId)
+        {
+            _logger.LogInformation("[TasksBL][GetTaskById()] entered function");
+            return await _uow.TasksRepository.FindTaskById(taskId);
+        }
+
+
         public async Task<TaskDTO> AddNewTaskAsync(Guid userId, AddTaskDTO addTaskDTO)
         {
             _logger.LogInformation("[TasksBL][addTaskDTO()] entered function");

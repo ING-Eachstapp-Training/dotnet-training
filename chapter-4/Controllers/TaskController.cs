@@ -30,6 +30,14 @@ public class TaskController : ControllerBase
         return new OkObjectResult(_tasksBL.GetAllTasks(userId));
     }
 
+    [HttpGet("{taskId}")]
+    [Attributes.AuthorizeAttributes()]
+    public async Task<ActionResult<TaskDTO>> GetTaskById(Guid taskId)
+    {
+        _logger.LogInformation("[TaskController][GetTaskById()] entered controller");
+        return new OkObjectResult(await _tasksBL.GetTaskById(taskId));
+    }
+
     [HttpPost]
     [Attributes.AuthorizeAttributes()]
     public async Task<ActionResult<TaskDTO>> CreateNewTaskAsync(AddTaskDTO addTaskDTO)
@@ -47,7 +55,7 @@ public class TaskController : ControllerBase
         return new OkObjectResult(await _tasksBL.UpdateTask(updateTaskDTO));
     }
 
-    [HttpPut("/ToggleTask")]
+    [HttpPut("ToggleTask")]
     [Attributes.AuthorizeAttributes()]
     public async Task<ActionResult<List<TaskDTO>>> ToggleTaskAsync(Guid taskId, bool newIsComplete)
     {
