@@ -1,6 +1,7 @@
 ﻿using System;
 using chapter_4.BL;
 using chapter_4.DTO;
+using chapter_4.DTO.Add;
 using chapter_4.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,11 +20,11 @@ namespace chapter_4.Controllers
             _usersBL = usersBL;
         }
 
-        [HttpPost("/login")]
-        public async Task<ActionResult<TaskDTO>> LoginAsync(string email)
+        [HttpPost("login")]
+        public async Task<ActionResult<TaskDTO>> LoginAsync(LoginDTO loginDTO)
         {
             _logger.LogInformation("[AuthenticationController][Login()] entered controller");
-            var userId = await _usersBL.GetUserWithEmailAsync(email);
+            var userId = await _usersBL.GetUserWithEmailAsync(loginDTO.email);
             if (userId == null)
             {
                 throw new WrongCredentialsException();
