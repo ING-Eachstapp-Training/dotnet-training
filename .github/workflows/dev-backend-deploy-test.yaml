@@ -65,7 +65,7 @@ jobs:
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
         with:
-          app-name: 'ing-training-wapp-backend-dev'
+          app-name: 'interview-test-eachstapp-junior'
           slot-name: 'Production'
           publish-profile: ${{ secrets.ING_TRAINING_DEV_AZUREAPPSERVICE_PUBLISHPROFILE }}
           package: .
